@@ -4,4 +4,4 @@
 
 <br>
 
-**-Feel free to check out these notebooks and other files, which includes the documentation of project I've done as an aspiring *data analyst*. Thank you!**
+**-Feel free to check out these notebook and other files, which includes the documentation of project I've done as an aspiring *data analyst*. Thank you!**
