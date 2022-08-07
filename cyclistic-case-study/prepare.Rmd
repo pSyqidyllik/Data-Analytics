@@ -1,0 +1,265 @@
+---
+title: "Cyclistic Bike-share: A Case Study (Prepare-Process Phase)"
+author: "Cedrick C. Sante"
+output: html_notebook
+---
+
+*Dataset taken from Motivate International Inc. under this [license](https://ride.divvybikes.com/data-license-agreement)*
+
+# Preparing/ Checking for Data Cleanliness
+
+## Converted the started_at & end_at columns to 37:30:55 format of each datasets
+
+![](convert.PNG)
+
+## Added Columns for ride_length based on the previous converted columns, day_of_week, and month
+
+![](column.PNG)
+
+## Merge all datasets:
+
+```{r}
+library('tidyverse')
+library('lubridate')
+
+b1 <- read_csv("202206-divvy-tripdata.csv")
+
+b2 <- read_csv("202205-divvy-tripdata.csv")
+
+bt <- full_join(b1, b2)
+
+b3 <- read_csv("202204-divvy-tripdata.csv")
+bt <- full_join(bt, b3)
+
+b4 <- read_csv("202203-divvy-tripdata.csv")
+bt <- full_join(bt, b4)
+
+b5 <- read_csv("202202-divvy-tripdata.csv")
+bt <- full_join(bt, b5)
+
+b6 <- read_csv("202201-divvy-tripdata.csv")
+bt <- full_join(bt, b6)
+
+b7 <- read_csv("202112-divvy-tripdata.csv")
+bt <- full_join(bt, b7)
+
+b8 <- read_csv("202111-divvy-tripdata.csv")
+bt <- full_join(bt, b8)
+
+b9 <- read_csv("202110-divvy-tripdata.csv")
+bt <- full_join(bt, b9)
+
+b10 <- read_csv("202109-divvy-tripdata.csv")
+bt <- full_join(bt, b10)
+
+b11 <- read_csv("202108-divvy-tripdata.csv")
+bt <- full_join(bt, b11)
+
+b12 <- read_csv("202107-divvy-tripdata.csv")
+bt <- full_join(bt, b12)
+
+
+```
+
+## Explore Data
+
+### Ride Types:
+
+```{r}
+bt %>% group_by(rideable_type) %>% summarize()
+
+```
+
+### Types of Customers/Subscribers
+
+```{r}
+bt %>% group_by(member_casual) %>% summarize()
+
+```
+
+### Day of week (1 is Sunday, 2 is Monday, etc...)
+
+```{r}
+bt %>% group_by(day_of_week) %>% summarize()
+
+```
+
+### Month data is gathered:
+
+```{r}
+bt %>% group_by(bt$month) %>% summarize()
+
+```
+
+# Analysis
+
+## Pre-analysis for common Statistics values
+
+Mean of ride_length
+
+```{r}
+seconds_to_period(mean(bt$ride_length, na.rm = TRUE))
+
+```
+
+Max ride_length
+
+```{r}
+seconds_to_period(max(bt$ride_length, na.rm = TRUE))
+
+```
+
+```{r}
+filter(bt, ride_length == 359085) #359085 seconds = "4d 3H 44M 45S"
+
+```
+
+Mode of day_of_week
+
+```{r}
+# no built-in function for mode in R, hence code for one
+getmode <- function(v) {
+   uniqv <- unique(v)
+   uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+
+getmode(bt$day_of_week) #7 is Saturday
+
+```
+
+## Pivot tables
+
+Average ride_length of Member types:
+
+```{r}
+bt %>% group_by(member_casual) %>% 
+  summarise(average_ride_length = seconds_to_period(mean(ride_length, na.rm = TRUE)))
+
+```
+
+Average ride_length per day of week:
+
+```{r}
+bt %>% group_by(day_of_week) %>% 
+  summarise(average_ride_length = seconds_to_period(mean(ride_length, na.rm = TRUE)))
+
+```
+
+Numbers of rides per day of week
+
+```{r}
+bt %>% group_by(day_of_week) %>% summarise(number_of_rides = n_distinct(ride_id))
+
+```
+
+## Data useful for viz:
+
+-Number of Casual Riders vs. Annual Subscribers
+
+```{r}
+bt %>% group_by(member_casual) %>% 
+  summarise(number_of_rides = (n_distinct(ride_id)))
+```
+
+
+-Number of rides per month
+
+```{r}
+bt %>% group_by(bt$month, member_casual) %>% 
+  summarise(number_of_rides = (n_distinct(ride_id)))
+
+```
+
+-Number of rides per week:
+
+```{r}
+bt %>% group_by(day_of_week, member_casual) %>% 
+  summarise(number_of_rides = (n_distinct(ride_id)))
+
+```
+<br><br>
+
+# Share (Visualizations)
+
+## Number of Casual Riders vs. Annual Subscribers
+
+```{r}
+df <- bt %>% group_by(member_casual) %>% 
+  summarise(number_of_rides = (n_distinct(ride_id)))
+
+ggplot(df) + geom_col(mapping = aes(x = member_casual, y = number_of_rides, 
+                                      fill = member_casual)) + 
+    labs(x = "Member", y = "Number of Riders", 
+         title = "Rider Types of Cyclistic", 
+         subtitle = "Casual vs. Annual Subscribers")
+```
+*-Though the number of members who avail the annual subscription is greater, it is **deceptive** to the **actual usage** of Cyclistic's bikes.*
+
+## Number of Rides per Month
+
+```{r}
+df <- bt %>% select(month, member_casual, ride_id)
+df <- mutate(df, month = my(df$month))
+
+ggplot(df) + geom_bar(mapping = aes(x = month, fill = member_casual)) +
+  labs(x = "Month", y = "Number of Rides", title = "Number of Rides per month in 2021-2022")
+
+```
+
+```{r}
+df <- df %>% group_by(month) %>% summarise(number_of_rides = n_distinct(ride_id))
+
+ggplot(df) + geom_line(mapping = aes(x = month, y = number_of_rides)) +
+  labs(x = "Month", y = "Number of Rides", title = "Number of Rides per month in 2021-2022")
+
+```
+
+*-Number of rides, especially by casuals, lowers around **November to February,** which makes sense because of rainy/winter season. It starts to return around **March onwards**, and get higher upon beginning and time of summer.*
+
+-Hence, marketing should be focused as **summer times approach, during it, and few months after (around March to September).**
+
+<br> <br>
+
+## Number of Rides in a Week
+
+```{r}
+ggplot(bt) + geom_bar(mapping = aes(x = day_of_week, fill = member_casual)) +
+  labs(x = "Day of Week", y = "Number of Rides", 
+       title = "Average Number of Rides in a Week",
+       subtitle = "1 is Sunday, 2 is Monday, etc...") 
+
+```
+
+*-Data shows that there are more users during weekend, especially casuals.*
+
+-Hence, promos like giving discounts for annual memberships' availability should be based in there, like **limited time offer during weekends.**
+
+<br> <br>
+
+## Ride Length in a Week
+
+```{r}
+df <- bt %>% select(day_of_week, member_casual, ride_length)
+df <- df %>% group_by(day_of_week, member_casual) %>% summarise(ave_ride_len = mean(ride_length, na.rm = TRUE))
+
+ggplot(df) + geom_col(mapping = aes(x = day_of_week, y = df$ave_ride_len, fill = member_casual)) +
+  labs(x = "Day of Week", y = "Ride Length in Seconds", 
+       title = "Average Ride Length in a Week",
+       subtitle = "1 is Sunday, 2 is Monday, etc...") 
+```
+
+*-It could be seen that Casual users, as a group, collectively uses our bike in a **longer period of time**. This increases our outward cashflow, towards fund for maintenance for larger number of bikes that are used by them, even if they actually spend less money for our service.*
+
+-Hence, this reinforces further the need of converting these casual users to our annual subscription.
+
+# Conclusion
+-Marketing should be ramped up as **summer** approaches, during, and a few months after it.
+
+
+
+-Promos like limited time offerings should be given during **weekends**.
+
+
+
+-Though annual subscribers are greater in number, casual members should still be converted, as that group could cost us more in the long run with maintenance of our bikes.
+
