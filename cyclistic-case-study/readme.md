@@ -8,6 +8,9 @@
 *This project was done as part of Google Data Analytics Capstone.*
 
 <br>
+
+[](logo.png)
+
 <br>
 
 -A case study of a fictional bike-rental company, though data is taken from actual business. I've analyzed a combination of 12 sets of data, as to find differences from casual bike riders and annual-subscribing members. This is also intended to help in persuading those casual users to avail the annual subscription, as it's significantly more profitable.
