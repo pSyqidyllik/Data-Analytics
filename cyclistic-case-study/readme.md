@@ -9,7 +9,7 @@
 
 <br>
 
-[](logo.PNG)
+![](logo.png)
 
 <br>
 
