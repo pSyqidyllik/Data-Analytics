@@ -10,7 +10,9 @@
 <br>
 <br>
 
--A case study of a fictional bike-rental company, though data is taken from actual business. I've analyzed a combination of 10 sets of data using **MS Excel** for simple data manipulation, and mainly **R** for actual analysis and visualization. Feel free to check out the **Roadmap** and **Slideshow Presentation** included in this folder or through this links: 
+-A case study of a fictional bike-rental company, though data is taken from actual business. I've analyzed a combination of 12 sets of data, as to find differences from casual bike riders and annual-subscribing members. This is also intended to help in persuading those casual users to avail the annual subscription, as it's significantly more profitable.
+
+Tools used include **MS Excel** for simple data manipulation, and mainly **R** for actual analysis and visualization. Feel free to check out the **Roadmap** and **Slideshow Presentation** included in this folder or through this links: 
   - [Roadmap](https://docs.google.com/document/d/1NrP-5rhY4dA5hN4HwWCeGP3eWc6mn--nZiTXk4OFl_s/edit?usp=sharing)
   - [Slideshow](https://docs.google.com/presentation/d/1PDHf-yU1aZB1BqKPXKldaiuFnZTV0EwI6rUIFHyTny8/edit?usp=sharing)
 
