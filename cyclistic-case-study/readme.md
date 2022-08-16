@@ -1,7 +1,7 @@
 # Cyclistic Bike-share: A Case Study
 ### -Cedrick C. Sante
 
-*Datasets used is from [Divvy Bikes](https://divvy-tripdata.s3.amazonaws.com/index.html), the ones from July 2021 to June 2022, under this [license](https://ride.divvybikes.com/data-license-agreement).*
+*Datasets used are from [Divvy Bikes](https://divvy-tripdata.s3.amazonaws.com/index.html), the ones from July 2021 to June 2022, under this [license](https://ride.divvybikes.com/data-license-agreement).*
 
 *[R](https://cran.r-project.org/mirrors.html) with [RStudio IDE](https://www.rstudio.com/products/rstudio/download/#download) recommended to run the R notebook (.Rmd file). This can also run in [RStudio Cloud](rstudio.cloud).*
 
